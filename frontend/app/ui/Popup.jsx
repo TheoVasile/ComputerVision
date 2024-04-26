@@ -13,10 +13,22 @@ const Popup = ({children, ...props}) => {
         setOpen(false);
     };
 
+    const buttonStyle = {
+        backgroundColor: props.backgroundColor,
+        border: `2px solid ${props.color}`,
+        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+        padding: '10px 20px',
+        borderRadius: '10px',
+        cursor: 'pointer',
+        outline: 'none',
+        fontSize: '16px',
+        color: props.color,
+    }
+
     return (
         <React.Fragment>
-            <Button variant="outlined" onClick={handleClickOpen}>
-                open form dialog
+            <Button style={buttonStyle} variant="outlined" onClick={handleClickOpen}>
+                {props.text}
             </Button>
             <Dialog open={open} onClose={handleClose}>
                 {children}

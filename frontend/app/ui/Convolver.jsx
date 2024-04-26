@@ -12,7 +12,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 export default function Convolver() {
   return (
-    <Popup>
+    <Popup backgroundColor='#96C3C4' color='#5a7575' text='CNN'>
         <Kernel />
       </Popup>
   );
