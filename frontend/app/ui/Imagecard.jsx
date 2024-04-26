@@ -13,7 +13,9 @@ const ImageCard = (props) => {
     };
 
     return (
-        <div style={style} />
+        <div style={style}>
+            {props.text}
+        </div>
     );
 };
 

@@ -1,40 +1,13 @@
 "use client"
 import Image from 'next/image'
 import React, {useCallback, useState, useMemo} from 'react'
+import ImageCard from './Imagecard'
 import {useDropzone} from 'react-dropzone'
 
-const baseStyle = {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '20px',
-    borderWidth: 2,
-    borderRadius: 2,
-    borderColor: '#eeeeee',
-    borderStyle: 'dashed',
-    backgroundColor: '#fafafa',
-    color: '#bdbdbd',
-    outline: 'none',
-    transition: 'border .24s ease-in-out'
-};
 
-const focusedStyle = {
-    borderColor: '#2196f3'
-};
-
-const acceptStyle = {
-    borderColor: '#00e676'
-};
-
-const rejectStyle = {
-    borderColor: '#ff1744'
-};
-
-const Dropzone = ({className, onDrop}) => {
+const Dropzone = ({...props}) => {
     const [files, setFiles] = useState([])
-
-    /*
+    
     const onDrop = useCallback(acceptedFiles => {
         if (acceptedFiles?.length) {
             setFiles(previousFiles => [
@@ -43,7 +16,7 @@ const Dropzone = ({className, onDrop}) => {
                 Object.assign(file, {preview: URL.createObjectURL(file)}))
             ])
         }
-    }, [])*/
+    }, []);
 
     const {
         getRootProps,
@@ -53,20 +26,19 @@ const Dropzone = ({className, onDrop}) => {
         isDragReject
     } = useDropzone({onDrop, accept: {'image/*': []}});
 
-    const style = useMemo(() => ({
-        ...baseStyle,
-        ...(isFocused ? focusedStyle : {}),
-        ...(isDragAccept ? acceptStyle : {}),
-        ...(isDragReject ? rejectStyle : {})
-    }), [
-        isFocused,
-        isDragAccept,
-        isDragReject
-    ]);
-
     return (
         <form>
-            <div {...getRootProps({className: className})} >
+            <div {...getRootProps({className: props.className})}>
+                <input {...getInputProps()} />
+                <ImageCard width='150px' text={props.text} height='150px' src = {(files.length > 0) ? files.at(-1).preview : ""}/>
+            </div>
+        </form>
+    )
+
+    /*
+    return (
+        <form>
+            <div {...getRootProps({className: props.className})} style={buttonStyle}>
             <input {...getInputProps()} />
             {
                 files.length ?
@@ -76,6 +48,7 @@ const Dropzone = ({className, onDrop}) => {
             </div>
         </form>
     )
+    */
 }
 
 export default Dropzone;
