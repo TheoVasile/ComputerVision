@@ -1,5 +1,4 @@
 "use client"
-import Image from 'next/image'
 import React, {useCallback, useState, useMemo} from 'react'
 import ImageCard from './Imagecard'
 import {useDropzone} from 'react-dropzone'

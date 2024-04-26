@@ -4,6 +4,7 @@ import Dropzone from './ui/Dropzone'
 import Sidebar from './ui/Sidebar'
 import Convolver from './ui/Convolver'
 import ImageCard from './ui/Imagecard'
+import BottomDrawer from './ui/BottomDrawer'
 import {useState} from 'react'
 
 const Page = () => {
@@ -24,6 +25,11 @@ const Page = () => {
       ) : (
         <p>hello</p>
       )}
+      <BottomDrawer>
+        <div>
+          content
+        </div>
+      </BottomDrawer>
     </div>
   )
 }
