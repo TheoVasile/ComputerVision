@@ -15,7 +15,7 @@ const Page = () => {
     <div className='p-4'>
       <Sidebar />
       {isImgSelected ? (
-        <div>
+        <div className="container">
           <Dropzone className="flex bg-gray-100 w-50 h-50 border-2 border-dashed items-center rounded" />
           <Convolver />
           <ImageCard width='150px' height='150px' />
