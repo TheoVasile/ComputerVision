@@ -2,7 +2,7 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 
-const Popup = ({buttonContent, popupContent, ...props}) => {
+const Popup = ({buttonContent, renderPopupContent, ...props}) => {
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -19,7 +19,7 @@ const Popup = ({buttonContent, popupContent, ...props}) => {
                 {buttonContent}
             </Button>
             <Dialog open={open} onClose={handleClose}>
-                {popupContent}
+                {renderPopupContent(handleClose)}
             </Dialog>
         </React.Fragment>
     );
