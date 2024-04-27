@@ -11,7 +11,7 @@ const inputStyle = {
     boxShadow: 'inset 0 0 8px rgba(0,0,0,0.1)', // indented shadow
     outline: 'none', // to remove the default focus outline
     // add additional styles as needed
-  };
+};
 
 const popupContent = () => {
     const [value, setValue] = React.useState(10);

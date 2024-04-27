@@ -22,7 +22,6 @@ export default function Convolver({...props}) {
           fontWeight: 'bold'
       }}>CNN</span>
       </div>} renderPopupContent={Kernel}>
-        <Kernel />
       </Popup>
   );
 }
