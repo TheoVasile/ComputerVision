@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Button from '@mui/material/Button'
 
 const inputStyle = {
     width: '100%',
@@ -19,24 +18,25 @@ function Kernel() {
     const [gridValues, setGridValues] = React.useState([]);
     
     const initializeGrid = (rows, cols) => {
-        const grid = Array.from({ length: rows}, () => Array.from({ length: cols}, () => ''));
+        const grid = Array.from({ length: rows}, () => Array.from({ length: cols}, () => '0'));
         setGridValues(grid);
     };
 
     const handleInputChange = (rowIndex, colIndex, value) => {
-        const numericValue = value.replace(/[^0-9]/g, '');
-        // Create a new copy of the grid with the updated value
-        const newGridValues = gridValues.map((row, rIndex) => 
-            row.map((cell, cIndex) => {
-                if (rIndex === rowIndex && cIndex === colIndex) {
-                    return numericValue; // update the value for the specific cell
-                }
-                return cell; // return the existing value for other cells
-            })
-        );
-    
-        // Update the state with the new grid
-        setGridValues(newGridValues);
+        const isValidValue = /^-?\d*(\.\d*)?$/.test(value);
+        if (isValidValue) {
+            // Create a new copy of the grid with the updated value
+            const newGridValues = gridValues.map((row, rIndex) => 
+                row.map((cell, cIndex) => {
+                    if (rIndex === rowIndex && cIndex === colIndex) {
+                        return value; // update the value for the specific cell
+                    }
+                    return cell; // return the existing value for other cells
+                })
+            );
+            // Update the state with the new grid
+            setGridValues(newGridValues);
+        }
     };
 
     React.useEffect(() => {

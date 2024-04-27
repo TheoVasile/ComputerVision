@@ -3,6 +3,7 @@
 import Dropzone from './ui/Dropzone'
 import Sidebar from './ui/Sidebar'
 import Convolver from './ui/Convolver'
+import PCA from './ui/PCA'
 import ImageCard from './ui/Imagecard'
 import InsertNetwork from './ui/InsertNetwork'
 import BottomDrawer from './ui/BottomDrawer'
@@ -12,7 +13,7 @@ import {useState} from 'react'
 function algorithmComponentList(algorithms) {
   return algorithms.map((algorithm, index) => {
     if (algorithm === "CNN") {
-      return(<Convolver key={index}/>);
+      return(<PCA key={index}/>);
     }
   });
 }
@@ -36,7 +37,8 @@ const Page = () => {
       {isImgSelected ? (
         <div className="container">
           <Dropzone className='' text='Drop image' height='150px' width='150px' />
-          <Convolver/>
+          <PCA/>
+          <Convolver />
           {algorithmComponentList(encoder)}
           <InsertNetwork width='50px' height='50px' onAddComponent={(algorithmType) => handleAddAlgorithm(algorithmType, 'encoder')}/>
           <ImageCard width='100px' height='100px' />
