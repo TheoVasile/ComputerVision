@@ -14,7 +14,11 @@ import {useState} from 'react'
 function algorithmComponentList(algorithms) {
   return algorithms.map((algorithm, index) => {
     if (algorithm === "CNN") {
-      return(<PCA key={index}/>);
+      return(<Convolver key={index}/>);
+    } else if (algorithm === "PCA") {
+      return(<PCA key={index}/>)
+    } else if (algorithm === "FF") {
+      return(<Feedforward key={index}/>)
     }
   });
 }
