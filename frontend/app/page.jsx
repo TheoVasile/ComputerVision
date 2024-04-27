@@ -8,15 +8,26 @@ import InsertNetwork from './ui/InsertNetwork'
 import BottomDrawer from './ui/BottomDrawer'
 import {useState} from 'react'
 
-const Page = () => {
-  const isImgSelected = true
-  const [showSidebar, setShowSidebar] = useState(false);
-  const encoder = []
-  const decoder = []
 
-  const handleAddAlgorithm = (algorithmType) => {
-    // Logic to add the specific machine learning algorithm component
-    console.log(`Adding algorithm: ${algorithmType}`);
+function algorithmComponentList(algorithms) {
+  return algorithms.map((algorithm, index) => {
+    if (algorithm === "CNN") {
+      return(<Convolver key={index}/>);
+    }
+  });
+}
+
+const Page = () => {
+  const isImgSelected = true;
+  const [encoder, setEncoder] = useState([]);
+  const [decoder, setDecoder] = useState([]);
+
+  const handleAddAlgorithm = (algorithmType, listType) => {
+    if (listType === 'encoder') {
+      setEncoder(prev => [...prev, algorithmType]);
+    } else if (listType === 'decoder') {
+      setDecoder(prev => [...prev, algorithmType]);
+    }
   };
 
   return (
@@ -25,9 +36,12 @@ const Page = () => {
       {isImgSelected ? (
         <div className="container">
           <Dropzone className='' text='Drop image' height='150px' width='150px' />
-          <InsertNetwork width='50px' height='50px' onAddComponent={handleAddAlgorithm}/>
+          <Convolver/>
+          {algorithmComponentList(encoder)}
+          <InsertNetwork width='50px' height='50px' onAddComponent={(algorithmType) => handleAddAlgorithm(algorithmType, 'encoder')}/>
           <ImageCard width='100px' height='100px' />
-          <InsertNetwork width='50px' height='50px' onAddComponent={handleAddAlgorithm}/>
+          {algorithmComponentList(decoder)}
+          <InsertNetwork width='50px' height='50px' onAddComponent={(algorithmType) => handleAddAlgorithm(algorithmType, 'decoder')}/>
           <ImageCard width='150px' height='150px' />
         </div>
       ) : (

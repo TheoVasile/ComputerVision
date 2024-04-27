@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Button from '@mui/material/Button'
 
-const Kernel = () => {
+function Kernel() {
     const [rows, setRows] = React.useState(3);
     const [cols, setCols] = React.useState(3);
     const [gridValues, setGridValues] = React.useState([]);
@@ -34,9 +34,6 @@ const Kernel = () => {
                     });
                 })}
             </div>
-            <Button>
-                Submit
-            </Button>
         </div>
     );
 };
