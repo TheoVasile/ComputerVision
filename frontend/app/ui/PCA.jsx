@@ -39,7 +39,7 @@ const popupContent = () => {
     );
 };
 
-export default function PCA({...props}) {
+export default function PCA({groupKey, index, updateAlgorithmGroup, ...props}) {
   return (
     <Popup buttonContent={<div style={{
       display: 'flex',

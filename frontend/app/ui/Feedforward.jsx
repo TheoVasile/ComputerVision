@@ -32,7 +32,7 @@ const popupContent = () => {
     )
 }
 
-export default function Feedforward({...props}) {
+export default function Feedforward({groupKey, index, updateAlgorithmGroup, ...props}) {
     return (
       <Popup buttonContent={<div style={{
         display: 'flex',

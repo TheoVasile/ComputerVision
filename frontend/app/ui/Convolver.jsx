@@ -2,7 +2,7 @@ import * as React from 'react';
 import Popup from './Popup';
 import Kernel from './Kernel';
 
-export default function Convolver({...props}) {
+export default function Convolver({groupKey, index, updateAlgorithmGroup, ...props}) {
   return (
     <Popup buttonContent={<div style={{
       display: 'flex',

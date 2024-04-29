@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+.button {
+  color: white;
+  background-color: black;
+  border-radius: 20px;
+  padding: 8px;
+}
+.button:hover {
+  background-color: gray;
+}
+
 .container {
   display: flex;
   flex-direction: column;

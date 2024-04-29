@@ -11,50 +11,57 @@ import BottomDrawer from './ui/BottomDrawer'
 import {useState} from 'react'
 
 
-function algorithmComponentList(algorithms) {
-  return algorithms.map((algorithm, index) => {
-    if (algorithm === "CNN") {
-      return(<Convolver key={index}/>);
-    } else if (algorithm === "PCA") {
-      return(<PCA key={index}/>)
-    } else if (algorithm === "FF") {
-      return(<Feedforward key={index}/>)
-    }
-  });
-}
-
 const Page = () => {
-  const isImgSelected = true;
-  const [encoder, setEncoder] = useState([]);
-  const [decoder, setDecoder] = useState([]);
+  // const [encoder, setEncoder] = useState([]);
+  // const [decoder, setDecoder] = useState([]);
+  const [algorithmGroups, setAlgorithmGroups] = useState({encoder: [], decoder: []})
 
-  const handleAddAlgorithm = (algorithmType, listType) => {
-    if (listType === 'encoder') {
-      setEncoder(prev => [...prev, algorithmType]);
-    } else if (listType === 'decoder') {
-      setDecoder(prev => [...prev, algorithmType]);
-    }
+  const updateAlgorithmGroup = (groupKey, index, newAlgorithmData) => {
+    setAlgorithmGroups(prev => ({
+      ...prev,
+      [groupKey]: prev[groupKey].map((item, idx) => idx === index ? { ...item, ...newAlgorithmData } : item)
+    }));
   };
+
+  // Example functions to add an algorithm to a group
+  const addAlgorithm = (groupKey, algorithmType) => {
+    const newAlgorithm = { type: algorithmType, data: {} }; // Initialize with an empty data object
+    setAlgorithmGroups(prev => ({
+      ...prev,
+      [groupKey]: [...prev[groupKey], newAlgorithm]
+    }));
+  };
+
+  function algorithmComponentList(groupKey) {
+    return algorithmGroups[groupKey].map((algorithm, index) => {
+      if (algorithm.type === "CNN") {
+        return(<Convolver key={index} groupKey={groupKey} index={index} updateAlgorithmGroup={updateAlgorithmGroup}/>);
+      } else if (algorithm.type === "PCA") {
+        return(<PCA key={index} groupKey={groupKey} index={index} updateAlgorithmGroup={updateAlgorithmGroup}/>)
+      } else if (algorithm.type === "FF") {
+        return(<Feedforward key={index} groupKey={groupKey} index={index} updateAlgorithmGroup={updateAlgorithmGroup}/>)
+      }
+    });
+  }
 
   return (
     <div className='p-4'>
       <Sidebar />
-      {isImgSelected ? (
         <div className="container">
-          <Dropzone className='' text='Drop image' height='150px' width='150px' />
-          <PCA/>
-          <Convolver />
-          <Feedforward />
-          {algorithmComponentList(encoder)}
-          <InsertNetwork width='50px' height='50px' onAddComponent={(algorithmType) => handleAddAlgorithm(algorithmType, 'encoder')}/>
-          <ImageCard width='100px' height='100px' />
-          {algorithmComponentList(decoder)}
-          <InsertNetwork width='50px' height='50px' onAddComponent={(algorithmType) => handleAddAlgorithm(algorithmType, 'decoder')}/>
+          <div>
+            <Dropzone className='' text='Drop image' height='150px' width='150px' />
+            <button className="button">Encode</button>
+          </div>
+          {algorithmComponentList("encoder")}
+          <InsertNetwork width='50px' height='50px' onAddComponent={(algorithmType) => addAlgorithm('encoder', algorithmType)}/>
+          <div>
+            <ImageCard width='100px' height='100px' />
+            <button className="button">Decode</button>
+          </div>
+          {algorithmComponentList("decoder")}
+          <InsertNetwork width='50px' height='50px' onAddComponent={(algorithmType) => addAlgorithm('decoder', algorithmType)}/>
           <ImageCard width='150px' height='150px' />
         </div>
-      ) : (
-        <p>hello</p>
-      )}
       <BottomDrawer>
         <div>
           content
