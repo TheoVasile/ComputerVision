@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+/*
 const inputStyle = {
     width: '100%',
     padding: '10px',
@@ -11,12 +12,13 @@ const inputStyle = {
     outline: 'none', // to remove the default focus outline
     // add additional styles as needed
   };
+*/
 
-function Kernel() {
+const Kernel = ({groupKey, index, updateAlgorithmGroup}) => {
     const [rows, setRows] = React.useState(3);
     const [cols, setCols] = React.useState(3);
     const [gridValues, setGridValues] = React.useState([]);
-    
+
     const initializeGrid = (rows, cols) => {
         const grid = Array.from({ length: rows}, () => Array.from({ length: cols}, () => '0'));
         setGridValues(grid);
@@ -36,6 +38,7 @@ function Kernel() {
             );
             // Update the state with the new grid
             setGridValues(newGridValues);
+            updateAlgorithmGroup(groupKey, index, {type: "CNN", kernel: newGridValues})
         }
     };
 
@@ -52,11 +55,11 @@ function Kernel() {
                     return row.map((value, colIndex) => {
                         return (
                             <input
+                                className="input"
                                 key={`${rowIndex}-${colIndex}`} 
                                 type="text" 
                                 value={value} 
                                 onChange={(e) => handleInputChange(rowIndex, colIndex, e.target.value)}
-                                style={inputStyle} 
                             />
                         );
                     });
