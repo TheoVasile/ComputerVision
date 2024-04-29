@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import Popup from "./Popup";
 
 const inputStyle = {
@@ -12,10 +14,20 @@ const inputStyle = {
     // add additional styles as needed
 };
 
+const networkComponentList = (layer_sizes) => {
+    return layer_sizes.map((layer_size, index) => {
+        <div>
+            layer size
+            <input style={{inputStyle}} value={layer_size}/>
+        </div>
+    });
+}
+
 const popupContent = () => {
+    const [layers, setLayers] = useState([0])
     return (
         <div>
-            layerSize
+            {networkComponentList(layers)}
         </div>
     )
 }
@@ -29,11 +41,11 @@ export default function Feedforward({...props}) {
         // Add other styles for the box as needed, like width, height, border, etc.
         width: props.width, // example width
         height: props.height, // example height
-        border: '2px solid #6389ac',
         borderRadius: '10px',
         padding: '10px 10px',
         backgroundColor: '#8ec4f7',
         color: '#6389ac',
+        boxShadow: '0 0 8px rgba(0,0,0,0.2)'
         }}>
         <span style={{
             fontSize: '12px', // Adjust the size as needed

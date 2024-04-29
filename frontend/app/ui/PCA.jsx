@@ -48,11 +48,11 @@ export default function PCA({...props}) {
       // Add other styles for the box as needed, like width, height, border, etc.
       width: props.width, // example width
       height: props.height, // example height
-      border: '2px solid #b26d8e',
       borderRadius: '10px',
       padding: '10px 10px',
       backgroundColor: '#ff9ccb',
       color: '#b26d8e',
+      boxShadow: '0 0 8px rgba(0,0,0,0.2)'
       }}>
       <span style={{
           fontSize: '12px', // Adjust the size as needed
