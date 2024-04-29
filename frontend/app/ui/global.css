@@ -35,6 +35,17 @@
   box-shadow: 0 0 8px rgba(0,0,0,0.2)
 }
 
+.ff-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 10px 10px;
+  background-color: #8ec4f7;
+  color: #6389ac;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2)
+}
+
 .button {
   color: white;
   background-color: black;
