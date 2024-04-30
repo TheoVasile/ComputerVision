@@ -12,8 +12,6 @@ import {useState} from 'react'
 
 
 const Page = () => {
-  // const [encoder, setEncoder] = useState([]);
-  // const [decoder, setDecoder] = useState([]);
   const [algorithmGroups, setAlgorithmGroups] = useState({encoder: [], decoder: []})
 
   const updateAlgorithmGroup = (groupKey, index, newAlgorithmData) => {
@@ -34,12 +32,15 @@ const Page = () => {
 
   function algorithmComponentList(groupKey) {
     return algorithmGroups[groupKey].map((algorithm, index) => {
-      if (algorithm.type === "CNN") {
-        return(<Convolver key={index} groupKey={groupKey} index={index} updateAlgorithmGroup={updateAlgorithmGroup}/>);
-      } else if (algorithm.type === "PCA") {
-        return(<PCA key={index} groupKey={groupKey} index={index} updateAlgorithmGroup={updateAlgorithmGroup}/>)
-      } else if (algorithm.type === "FF") {
-        return(<Feedforward key={index} groupKey={groupKey} index={index} updateAlgorithmGroup={updateAlgorithmGroup}/>)
+      switch (algorithm.type) {
+        case "CNN":
+          return <Convolver key={index} groupKey={groupKey} index={index} updateAlgorithmGroup={updateAlgorithmGroup}/>;
+        case "PCA":
+          return <PCA key={index} groupKey={groupKey} index={index} updateAlgorithmGroup={updateAlgorithmGroup}/>;
+        case "FF":
+          return <Feedforward key={index} groupKey={groupKey} index={index} updateAlgorithmGroup={updateAlgorithmGroup}/>;
+      default:
+        return null;
       }
     });
   }

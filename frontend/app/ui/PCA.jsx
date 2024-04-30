@@ -1,8 +1,8 @@
 import * as React from 'react';
 import Popup from './Popup';
 
-const PopupContent = ({handleUpdate}) => {
-    const [value, setValue] = React.useState(10);
+
+const PopupContent = ({dimensions, handleUpdate}) => {
     return (
         <div style={{ padding:'30px' }}>
             <div>
@@ -13,23 +13,25 @@ const PopupContent = ({handleUpdate}) => {
                 className='input'
                 key={"pca"} 
                 type="text" 
-                value={value} 
-                onChange={(e) => {const value = e.target.value;
+                value={dimensions} 
+                onChange={(e) => {const val = e.target.value;
                     // Check if the value is an integer and greater than 0
-                    if (/^[1-9]\d*$/.test(value)) {
-                      setValue(value);
-                      handleUpdate(value);
-                    } else if (value === '') {
+                    if (/^[1-9]\d*$/.test(val)) {
+                      handleUpdate(val);
+                    } else if (val === '') {
                       // Allow the field to be empty (in case the user wants to delete the input)
-                      setValue(value);
+                      handleUpdate(val);
                     }}}/>
             </div>
         </div>
     );
 };
 
-export default function PCA({groupKey, index, updateAlgorithmGroup, ...props}) {
+
+export default function PCA({groupKey, index, updateAlgorithmGroup }) {
+  const [value, setValue] = React.useState(10);
   const handleUpdate = (newValue) => {
+    setValue(newValue);
     updateAlgorithmGroup(groupKey, index, { type: "PCA", output_size: parseInt(newValue, 10) });
   }
   
@@ -40,7 +42,7 @@ export default function PCA({groupKey, index, updateAlgorithmGroup, ...props}) {
             fontSize: '12px', // Adjust the size as needed
             fontWeight: 'bold'
         }}>PCA</span>
-      </div>} renderPopupContent={() => <PopupContent handleUpdate={handleUpdate}/>}
+      </div>} renderPopupContent={() => <PopupContent dimensions={value} handleUpdate={handleUpdate}/>}
       />
   );
 }

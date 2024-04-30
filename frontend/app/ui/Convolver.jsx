@@ -2,7 +2,7 @@ import * as React from 'react';
 import Popup from './Popup';
 import Kernel from './Kernel';
 
-export default function Convolver({groupKey, index, updateAlgorithmGroup, ...props}) {
+const Convolver = ({groupKey, index, updateAlgorithmGroup, ...props}) => {
   return (
     <Popup buttonContent={
     <div className="cnn-card">
@@ -13,9 +13,11 @@ export default function Convolver({groupKey, index, updateAlgorithmGroup, ...pro
       </div>
       } renderPopupContent={() => (<Kernel
           updateAlgorithmGroup={updateAlgorithmGroup} 
-          groupKey={groupKey} 
+          groupKey={groupKey}
           index={index}
         />)}>
       </Popup>
   );
 }
+
+export default Convolver;

@@ -14,3 +14,4 @@ For more information, see the [course curriculum](https://nextjs.org/learn) on t
 PCA Algorithm
 https://ieeexplore.ieee.org/abstract/document/1226343
 https://link.springer.com/content/pdf/10.1007/978-3-030-03243-2_649-1.pdf
+https://en.wikipedia.org/wiki/Principal_component_analysis
