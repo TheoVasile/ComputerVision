@@ -16,7 +16,7 @@ const PopupContent = ({dimensions, handleUpdate}) => {
                 value={dimensions} 
                 onChange={(e) => {const val = e.target.value;
                     // Check if the value is an integer and greater than 0
-                    if (/^[1-9]\d*$/.test(val)) {
+                    if (/^[1-9]\d*$/.test(val) || val === '') {
                       handleUpdate(val);
                     } else if (val === '') {
                       // Allow the field to be empty (in case the user wants to delete the input)
