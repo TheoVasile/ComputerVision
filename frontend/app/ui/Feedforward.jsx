@@ -4,19 +4,7 @@ import Popup from "./Popup";
 import AlgorithmGroupContext from '../contexts/AlgorithmGroupContext';
 
 
-const PopupContent = ({handleUpdate}) => {
-    const [layers, setLayers] = useState([])
-
-    const updateLayers = (index, weights, biases) => {
-        setLayers(prevLayers => 
-            prevLayers.map((layer, i) => i === index ? { weights: weights, biases: biases } : layer)
-          );
-    }
-
-    const addLayer = (weights, biases) => {
-        setLayers(prevLayers => [...prevLayers, {weights: weights, biases: biases}])
-    }
-
+const PopupContent = ({layers, handleUpdate}) => {
     return (
         <div style={{ padding:'30px' }}>
             {layers.map((layer, index) => {
@@ -28,7 +16,7 @@ const PopupContent = ({handleUpdate}) => {
                     {JSON.stringify(layer.biases)}
                 </div>)
             })}
-            <button className="button" onClick={() => addLayer([-1, 0, 1], [0, 0, 0])}>
+            <button className="button" onClick={()=>{handleUpdate([-1, 0, 1], [1, 1, 1])}}>
                 +
             </button>
         </div>
@@ -37,17 +25,20 @@ const PopupContent = ({handleUpdate}) => {
 
 export default function Feedforward({groupKey, index }) {
     const {updateAlgorithmGroup} = useContext(AlgorithmGroupContext)
-    const handleUpdate = ({newValue}) => {
-        updateAlgorithmGroup(groupKey, index, newValue)
+    const [layers, setLayers] = useState([])
+
+    const addLayer = (weights, biases) => {
+        setLayers(prevLayers => [...prevLayers, {weights: weights, biases: biases}])
+        updateAlgorithmGroup(groupKey, index, { type: "FF", params: layers })
     }
-    
+
     return (
       <Popup buttonContent={<div className="ff-card">
         <span style={{
             fontSize: '12px', // Adjust the size as needed
             fontWeight: 'bold'
         }}>FF</span>
-        </div>} renderPopupContent={() => <PopupContent handleUpdate={handleUpdate}/>}>
+        </div>} renderPopupContent={() => <PopupContent layers={layers} handleUpdate={(weights, biases)=> {addLayer(weights, biases)}}/>}>
         </Popup>
     );
   }
