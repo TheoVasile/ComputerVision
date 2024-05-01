@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 
 import Popup from "./Popup";
+import AlgorithmGroupContext from '../contexts/AlgorithmGroupContext';
 
 
 const PopupContent = ({handleUpdate}) => {
@@ -34,7 +35,8 @@ const PopupContent = ({handleUpdate}) => {
     )
 }
 
-export default function Feedforward({groupKey, index, updateAlgorithmGroup, ...props}) {
+export default function Feedforward({groupKey, index }) {
+    const {updateAlgorithmGroup} = useContext(AlgorithmGroupContext)
     const handleUpdate = ({newValue}) => {
         updateAlgorithmGroup(groupKey, index, newValue)
     }

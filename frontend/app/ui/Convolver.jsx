@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Popup from './Popup';
 import Kernel from './Kernel';
 import KernelContext from '../contexts/KernelContext'
+import AlgorithmGroupContext from '../contexts/AlgorithmGroupContext';
 
 const useGrid = (rows, cols) => {
   const createGrid = (rows, cols) => {
@@ -17,7 +18,8 @@ const useGrid = (rows, cols) => {
   return [gridValues, setGridValues];
 };
 
-const Convolver = ({groupKey, index, updateAlgorithmGroup }) => {
+const Convolver = ({groupKey, index }) => {
+  const {updateAlgorithmGroup} = useContext(AlgorithmGroupContext)
   const [rows, setRows] = useState(3);
   const [cols, setCols] = useState(3);
   const [gridValues, setGridValues] = useGrid(rows, cols);

@@ -1,5 +1,6 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import Popup from './Popup';
+import AlgorithmGroupContext from '../contexts/AlgorithmGroupContext';
 
 
 const PopupContent = ({dimensions, handleUpdate}) => {
@@ -28,7 +29,8 @@ const PopupContent = ({dimensions, handleUpdate}) => {
 };
 
 
-export default function PCA({groupKey, index, updateAlgorithmGroup }) {
+export default function PCA({groupKey, index }) {
+  const {updateAlgorithmGroup} = useContext(AlgorithmGroupContext)
   const [value, setValue] = React.useState(10);
   const handleUpdate = (newValue) => {
     setValue(newValue);
