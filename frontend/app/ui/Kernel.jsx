@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import KernelContext from '../contexts/KernelContext';
+import AlgorithmGroupContext from '../contexts/AlgorithmGroupContext';
 
 
-const Kernel = ({ groupKey, index, updateAlgorithmGroup }) => {
+const Kernel = ({ groupKey, index }) => {
+    const {updateAlgorithmGroup} = useContext(AlgorithmGroupContext)
     const {rows, setRows, cols, setCols, gridValues, setGridValues} = useContext(KernelContext)
 
     const handleInputChange = (rowIndex, colIndex, value) => {
