@@ -2,8 +2,8 @@ import numpy as np
 from numpy.typing import NDArray
 from typing import Tuple
 
-def process_cnn(kernel):
-    pass
+#def process_cnn(kernel):
+#    pass
 
 def _process_kernel(X: NDArray[np.float_], kernel: NDArray[np.float_], coordinate: Tuple[int]) -> np.float_:
     """
@@ -19,7 +19,7 @@ def _process_kernel(X: NDArray[np.float_], kernel: NDArray[np.float_], coordinat
     """
     return np.dot(X[coordinate[0]:coordinate[0]+len(kernel[0])][coordinate[1]:coordinate[1]+len(kernel[1])], kernel)
 
-def convolve(X: NDArray[np.float_], kernel: NDArray[np.float_]) -> NDArray[np.float_]:
+def process_cnn(X: NDArray[np.float_], kernel: NDArray[np.float_]) -> NDArray[np.float_]:
     """
     Perform a convolution on X using kernel with dot product
 

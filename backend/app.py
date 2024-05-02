@@ -16,8 +16,15 @@ def process():
         elif algorithm["type"] == "PCA":
             input = process_pca(input, algorithm["output_size"])
         elif algorithm["type"] == "FF":
+            print(algorithm)
             input = process_ff(input, algorithm["parameters"])
     return str(input)
+
+@app.route('/process-image', methods=['GET'])
+def process_image():
+    data = request.json
+    url = data["path"]
+    print(url)
 
 
 if __name__ == '__main__':

@@ -7,12 +7,14 @@ import PCA from './ui/PCA'
 import Feedforward from './ui/Feedforward'
 import ImageCard from './ui/Imagecard'
 import InsertNetwork from './ui/InsertNetwork'
-import BottomDrawer from './ui/BottomDrawer'
 import { useState } from 'react'
 import AlgorithmGroupContext from './contexts/AlgorithmGroupContext'
 
 
 const Page = () => {
+  const [inputImageSrc, setInputImageSrc] = useState("")
+  const [bottleneck, setBottleneck] = useState([])
+  const [outputImage, setOutputImage] = useState([])
   const [algorithmGroups, setAlgorithmGroups] = useState({encoder: [], decoder: []})
 
   const updateAlgorithmGroup = (groupKey, index, newAlgorithmData) => {
@@ -52,7 +54,7 @@ const Page = () => {
         <AlgorithmGroupContext.Provider value={{updateAlgorithmGroup}}>
           <div className="container">
             <div>
-              <Dropzone className='' text='Drop image' height='150px' width='150px' />
+              <Dropzone src={inputImageSrc} setSrc={setInputImageSrc} className='' text='Drop image' height='150px' width='150px'/>
               <button className="button">Encode</button>
             </div>
             {algorithmComponentList("encoder")}

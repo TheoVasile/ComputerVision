@@ -1,6 +1,6 @@
 import numpy as np
 from numpy.typing import NDArray
-from typing import List
+from typing import List, Dict
 
 def ReLu(x: float) -> float:
     """
@@ -12,7 +12,7 @@ def ReLu(x: float) -> float:
     Returns:
         float: The result of applying the ReLU function, which is `x` if `x` is greater than 0, else 0.
     """
-    return x * (x>0)
+    return max(0, x)
 
 def propogate(X: NDArray[np.float_], weights: NDArray[np.float_], biases: NDArray[np.float_]) -> NDArray[np.float_]:
     """
@@ -42,7 +42,7 @@ def activate(X: NDArray[np.float_]) -> NDArray[np.float_]:
     return ReLu(X)
 
 
-def process_ff(X: NDArray[np.float_], weights: List[NDArray[np.float_]], biases: List[NDArray[np.float_]]) -> NDArray[np.float_]:
+def process_ff(X: NDArray[np.float_], parameters: Dict[str, NDArray[np.float_]]) -> NDArray[np.float_]:
     """
     Processes the feedforward operation for a neural network with any number of layers.
 
@@ -54,7 +54,8 @@ def process_ff(X: NDArray[np.float_], weights: List[NDArray[np.float_]], biases:
     Returns:
         NDArray[np.float_]: The output of the neural network after processing all layers.
     """
-    for W, b in zip(weights, biases):
+    for param in parameters:
+        W, b = param["weights"], param["biases"]
         X = propogate(X, W, b)
         X = activate(X)
     return X
