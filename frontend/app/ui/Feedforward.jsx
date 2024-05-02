@@ -7,6 +7,19 @@ const initializeLayerParams = (layerSize) => {
     return {weights: Array.from({ length: layerSize }, () => Math.random()), biases: Array.from({ length: layerSize }, () => Math.random())};
 }
 
+const layerSelectPopupContext = (handleUpdate) => {
+    const [layerSize, setLayerSize] = useState(3)
+    return(
+        <div>
+            layer size
+            <input className="input" type="text" value={layerSize} onChange={(e) => {setLayerSize(e.target.value)}}/>
+            <button onClick={()=>{handleUpdate(initializeLayerParams(layerSize))}}>
+                submit
+            </button>
+        </div>
+    )
+}
+
 const PopupContent = ({layers, handleUpdate}) => {
     return (
         <div style={{ padding:'30px' }}>
@@ -15,15 +28,22 @@ const PopupContent = ({layers, handleUpdate}) => {
                 const formattedBiases = layer.biases.map(b => Number(b.toFixed(3)));
                 return (
                 <div>
-                    weights
-                    {JSON.stringify(formattedWeights)}
-                    biases
-                    {JSON.stringify(formattedBiases)}
+                    <div>
+                        layer {index+1}
+                    </div>
+                    <div>
+                        weights
+                        {JSON.stringify(formattedWeights)}
+                        biases
+                        {JSON.stringify(formattedBiases)}
+                    </div>
                 </div>)
             })}
-            <button className="button" onClick={()=>{handleUpdate(initializeLayerParams(3))}}>
+            <Popup buttonContent={
+                <button className="button">
                 +
             </button>
+            } renderPopupContent={()=>layerSelectPopupContext(handleUpdate)}/>
         </div>
     )
 }
