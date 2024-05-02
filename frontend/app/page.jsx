@@ -66,11 +66,6 @@ const Page = () => {
             <ImageCard width='150px' height='150px' />
           </div>
         </AlgorithmGroupContext.Provider>
-      <BottomDrawer>
-        <div>
-          content
-        </div>
-      </BottomDrawer>
     </div>
   )
 }
