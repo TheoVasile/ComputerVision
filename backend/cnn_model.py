@@ -2,8 +2,6 @@ import numpy as np
 from numpy.typing import NDArray
 from typing import Tuple
 
-#def process_cnn(kernel):
-#    pass
 
 def _process_kernel(X: NDArray[np.float_], kernel: NDArray[np.float_], coordinate: Tuple[int]) -> np.float_:
     """
@@ -17,7 +15,8 @@ def _process_kernel(X: NDArray[np.float_], kernel: NDArray[np.float_], coordinat
     Returns:
         float: The dot product where the kernel intersects the matrix
     """
-    return np.dot(X[coordinate[0]:coordinate[0]+len(kernel[0])][coordinate[1]:coordinate[1]+len(kernel[1])], kernel)
+    return np.dot(X[coordinate[0]:coordinate[0]+kernel.shape[0]][coordinate[1]:coordinate[1]+kernel.shape[1]], kernel)
+
 
 def process_cnn(X: NDArray[np.float_], kernel: NDArray[np.float_]) -> NDArray[np.float_]:
     """
@@ -31,7 +30,7 @@ def process_cnn(X: NDArray[np.float_], kernel: NDArray[np.float_]) -> NDArray[np
         numpy.ndarray: the resulting matrix from convolution
     """
     Z = np.zeros(X.size)
-    for i in range(X.size[0]-kernel.size[0]):
-        for j in range(X.size[1]-kernel.size[1]):
+    for i in range(X.shape[0]-kernel.shape[0]):
+        for j in range(X.shape[1]-kernel.shape[1]):
             Z[i][j] = _process_kernel(X, kernel, (i, j))
     return Z

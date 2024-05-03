@@ -4,17 +4,10 @@ import ImageCard from './Imagecard'
 import {useDropzone} from 'react-dropzone'
 
 
-const Dropzone = ({src, setSrc, ...props}) => {
-    const [files, setFiles] = useState([])
+const Dropzone = ({src, setSrc, file, setFile, ...props}) => {
     
     const onDrop = useCallback(acceptedFiles => {
-        if (acceptedFiles?.length) {
-            setFiles(previousFiles => [
-                ...previousFiles,
-                ...acceptedFiles.map(file =>
-                Object.assign(file, {preview: URL.createObjectURL(file)}))
-            ])
-        }
+        setFile(acceptedFiles[0])
     }, []);
 
     const {
@@ -27,9 +20,9 @@ const Dropzone = ({src, setSrc, ...props}) => {
 
     useEffect(() => {
         // This code runs when `files` array changes.
-        if (files.length > 0) {
+        if (file) {
             // Creating an object URL for the last file added
-            const newSrc = URL.createObjectURL(files[files.length - 1]);
+            const newSrc = URL.createObjectURL(file);
             setSrc(newSrc);
 
             // Optional: Clean up function to revoke URL when component unmounts or files update
@@ -37,7 +30,7 @@ const Dropzone = ({src, setSrc, ...props}) => {
                 URL.revokeObjectURL(newSrc);
             };
         }
-    }, [files]);
+    }, [file]);
 
     return (
         <form>

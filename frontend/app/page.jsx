@@ -13,15 +13,35 @@ import AlgorithmGroupContext from './contexts/AlgorithmGroupContext'
 
 const Page = () => {
   const [inputImageSrc, setInputImageSrc] = useState("")
+  const [inputImageFile, setInputImageFile] = useState(null)
   const [bottleneck, setBottleneck] = useState([])
   const [outputImage, setOutputImage] = useState([])
   const [algorithmGroups, setAlgorithmGroups] = useState({encoder: [], decoder: []})
+
+  const handleEncodeData = async () => {
+    const formData = new FormData();
+    formData.append('input', inputImageFile);
+    try {
+      console.log("algos "+ JSON.stringify(algorithmGroups.encoder))
+      formData.append('algorithms', JSON.stringify(algorithmGroups.encoder));
+    } catch (e) {
+      console.error(e)
+    }
+    const response = await fetch('http://127.0.0.1:5000/encode', {
+        method: 'POST',
+        body: formData //JSON.stringify({input: inputImageFile, algorithms: algorithmGroups.encoder})
+    });
+    const data = await response.json();
+    setBottleneck(JSON.stringify(data));
+};
 
   const updateAlgorithmGroup = (groupKey, index, newAlgorithmData) => {
     setAlgorithmGroups(prev => ({
       ...prev,
       [groupKey]: prev[groupKey].map((item, idx) => idx === index ? { ...item, ...newAlgorithmData } : item)
     }));
+    console.log(algorithmGroups)
+    console.log(algorithmGroups.encoder)
   };
 
   // Example functions to add an algorithm to a group
@@ -54,13 +74,15 @@ const Page = () => {
         <AlgorithmGroupContext.Provider value={{updateAlgorithmGroup}}>
           <div className="container">
             <div>
-              <Dropzone src={inputImageSrc} setSrc={setInputImageSrc} className='' text='Drop image' height='150px' width='150px'/>
-              <button className="button">Encode</button>
+              <Dropzone src={inputImageSrc} setSrc={setInputImageSrc} file={inputImageFile} setFile={setInputImageFile} className='' text='Drop image' height='150px' width='150px'/>
+              {inputImageSrc}
+              <button className="button" onClick={handleEncodeData}>Encode</button>
             </div>
             {algorithmComponentList("encoder")}
             <InsertNetwork width='50px' height='50px' onAddComponent={(algorithmType) => addAlgorithm('encoder', algorithmType)}/>
             <div>
               <ImageCard width='100px' height='100px' />
+              "{bottleneck}"
               <button className="button">Decode</button>
             </div>
             {algorithmComponentList("decoder")}
