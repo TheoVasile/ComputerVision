@@ -31,7 +31,9 @@ const Page = () => {
         method: 'POST',
         body: formData //JSON.stringify({input: inputImageFile, algorithms: algorithmGroups.encoder})
     });
+    console.log(response)
     const data = await response.json();
+    console.log(data)
     setBottleneck(JSON.stringify(data));
 };
 
