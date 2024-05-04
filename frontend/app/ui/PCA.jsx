@@ -34,7 +34,7 @@ export default function PCA({groupKey, index }) {
   const [value, setValue] = React.useState(10);
   const handleUpdate = (newValue) => {
     setValue(newValue);
-    updateAlgorithmGroup(groupKey, index, { type: "PCA", output_size: parseInt(newValue, 10) });
+    updateAlgorithmGroup(groupKey, index, { type: "PCA", output_features: parseInt(newValue, 10) });
   }
   
   return (

@@ -48,13 +48,13 @@ const PopupContent = ({layers, handleUpdate}) => {
     )
 }
 
-export default function Feedforward({groupKey, index }) {
+export default function Feedforward({ groupKey, index }) {
     const {updateAlgorithmGroup} = useContext(AlgorithmGroupContext)
     const [layers, setLayers] = useState([])
 
     const addLayer = (weights, biases) => {
         setLayers(prevLayers => [...prevLayers, {weights: weights, biases: biases}])
-        updateAlgorithmGroup(groupKey, index, { type: "FF", params: layers })
+        updateAlgorithmGroup(groupKey, index, { type: "FF", parameters: layers })
     }
 
     return (

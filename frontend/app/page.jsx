@@ -33,7 +33,6 @@ const Page = () => {
     });
     console.log(response)
     const data = await response.json();
-    console.log(data)
     setBottleneck(JSON.stringify(data));
 };
 
@@ -48,7 +47,7 @@ const Page = () => {
 
   // Example functions to add an algorithm to a group
   const addAlgorithm = (groupKey, algorithmType) => {
-    const newAlgorithm = { type: algorithmType, data: {} }; // Initialize with an empty data object
+    const newAlgorithm = { type: algorithmType }; // Initialize with an empty data object
     setAlgorithmGroups(prev => ({
       ...prev,
       [groupKey]: [...prev[groupKey], newAlgorithm]
@@ -84,7 +83,7 @@ const Page = () => {
             <InsertNetwork width='50px' height='50px' onAddComponent={(algorithmType) => addAlgorithm('encoder', algorithmType)}/>
             <div>
               <ImageCard width='100px' height='100px' />
-              "{bottleneck}"
+              {bottleneck.length} features
               <button className="button">Decode</button>
             </div>
             {algorithmComponentList("decoder")}

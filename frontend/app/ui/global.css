@@ -64,6 +64,26 @@
   height: 100vh;
 }
 
+.scrollable-list-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.image-list {
+  display: flex;
+  flex-wrap: nowrap; /* Prevent images from wrapping to the next line */
+}
+
+.image-list img {
+  width: 150px; /* Adjust the width of the images */
+  height: 150px; /* Maintain aspect ratio */
+  margin-right: 10px; /* Adjust spacing between images */
+}
+
+.horizontal-image-list {
+  overflow-x: auto;
+}
+
 @media (min-width: 768px) {
   .container {
     flex-direction: row;

@@ -1,38 +1,55 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack'
-import Dropzone from './Dropzone';
+//import Dropzone from './Dropzone';
+import { useDropzone } from 'react-dropzone';
+import ImageCard from './Imagecard';
+import HorizontalImageList from './HorizontalImageList'
 
 export default function Sidebar() {
     const [open, setOpen] = React.useState(false);
     const [images, setFiles] = React.useState([])
 
-    const onDrop = React.useCallback(acceptedFiles => {
-        if (acceptedFiles?.length) {
-            setFiles(previousFiles => [
-                ...previousFiles,
-                ...acceptedFiles.map(file =>
-                Object.assign(file, {src: URL.createObjectURL(file)}))
-            ])
-        }
+    const onDrop = useCallback(acceptedFiles => {
+        setFiles(previousFiles => [
+            ...previousFiles,
+            ...acceptedFiles.map(file =>{
+                return {
+                    file: file,
+                    src: URL.createObjectURL(file)
+                };
+            })
+        ])
+        console.log(images)
     }, [])
+
+    const {
+        getRootProps,
+        getInputProps,
+        isFocused,
+        isDragAccept,
+        isDragReject
+    } = useDropzone({onDrop, accept: {'image/*': []}});
 
     const toggleDrawer = (newOpen) => () => {
         setOpen(newOpen);
     };
 
     const DrawerList = (
-        <Stack direction="row" spacing={2} style={{overflowX: 'scroll'}}>
-                <Dropzone className="flex bg-gray-100 w-40 h-40 border-2 border-dashed items-center rounded" onDrop={onDrop}/>
-                {images.map((image, index) => (
-                    <div key={index} className="w-40 h-40" style={{ marginRight: '10px', display: 'inline-block' }}>
-                        <img src={image.src} className="w-40 h-40"/>
+        <div className="drawer-list-container">
+            <div className="image-list">
+                <form>
+                    <div {...getRootProps()}>
+                        <input {...getInputProps()} />
+                        <ImageCard width='150px' text="Click to select images" height='150px' src=""/>
                     </div>
-                ))}
-        </Stack>
+                </form>
+                <HorizontalImageList images={images}/>
+            </div>
+        </div>
     );
     return (
         <>

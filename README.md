@@ -4,6 +4,7 @@
 npm i react-responsive-carousel
 npm i @mui/material @emotion/react @emotion/styled
 npm i react-native
+npm i react-window
 ```
 
 This is the starter template for the Next.js App Router Course. It contains the starting code for the dashboard application.

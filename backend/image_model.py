@@ -17,7 +17,7 @@ def process_image(file, normalize=False, preserveColor=True) -> NDArray[np.float
     image = Image.open(file.stream)
     if not preserveColor:
         image = image.convert('L')
-    feature_matrix = np.asarray(image)
+    feature_matrix = np.asarray(image).astype(float)
     if normalize:
         feature_matrix /= 255
     return feature_matrix
