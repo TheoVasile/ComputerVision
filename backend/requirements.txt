@@ -1,0 +1,4 @@
+flask
+numpy
+PIL
+flask_cors
