@@ -15,7 +15,6 @@ const Page = () => {
   const [inputImageSrc, setInputImageSrc] = useState("")
   const [inputImageFile, setInputImageFile] = useState(null)
   const [bottleneck, setBottleneck] = useState([])
-  const [bottleneckImage, setBottleneckImage] = useState("")
   const [outputImage, setOutputImage] = useState([])
   const [algorithmGroups, setAlgorithmGroups] = useState({encoder: [], decoder: []})
 
@@ -34,10 +33,7 @@ const Page = () => {
     });
     console.log(response)
     const data = await response.json();
-    setBottleneck(data.result);
-    if (data.image) {
-      setBottleneckImage(data.image);
-    }
+    setBottleneck(JSON.stringify(data));
 };
 
   const updateAlgorithmGroup = (groupKey, index, newAlgorithmData) => {
@@ -86,7 +82,7 @@ const Page = () => {
             {algorithmComponentList("encoder")}
             <InsertNetwork width='50px' height='50px' onAddComponent={(algorithmType) => addAlgorithm('encoder', algorithmType)}/>
             <div>
-              <ImageCard width='100px' height='100px' src={bottleneckImage} />
+              <ImageCard width='100px' height='100px' />
               {bottleneck.length} features
               <button className="button">Decode</button>
             </div>
