@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from 'react'
 import Dropzone from './ui/Dropzone'
 import Sidebar from './ui/Sidebar'
 import Convolver from './ui/Convolver'
@@ -7,92 +8,184 @@ import PCA from './ui/PCA'
 import Feedforward from './ui/Feedforward'
 import ImageCard from './ui/Imagecard'
 import InsertNetwork from './ui/InsertNetwork'
-import { useState } from 'react'
 import AlgorithmGroupContext from './contexts/AlgorithmGroupContext'
 
+const BACKEND_URL = 'http://127.0.0.1:5000';
 
 const Page = () => {
+  // Image states
   const [inputImageSrc, setInputImageSrc] = useState("")
   const [inputImageFile, setInputImageFile] = useState(null)
   const [bottleneck, setBottleneck] = useState([])
+  const [bottleneckImage, setBottleneckImage] = useState(null)
   const [outputImage, setOutputImage] = useState([])
-  const [algorithmGroups, setAlgorithmGroups] = useState({encoder: [], decoder: []})
+  
+  // Algorithm states
+  const [algorithmGroups, setAlgorithmGroups] = useState({
+    encoder: [], 
+    decoder: []
+  })
+  
+  // UI states
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   const handleEncodeData = async () => {
-    const formData = new FormData();
-    formData.append('input', inputImageFile);
-    try {
-      console.log("algos "+ JSON.stringify(algorithmGroups.encoder))
-      formData.append('algorithms', JSON.stringify(algorithmGroups.encoder));
-    } catch (e) {
-      console.error(e)
+    if (!inputImageFile) {
+      setError('Please select an image first');
+      return;
     }
-    const response = await fetch('http://127.0.0.1:5000/encode', {
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('input', inputImageFile);
+      formData.append('algorithms', JSON.stringify(algorithmGroups.encoder));
+
+      const response = await fetch(`${BACKEND_URL}/encode`, {
         method: 'POST',
-        body: formData //JSON.stringify({input: inputImageFile, algorithms: algorithmGroups.encoder})
-    });
-    console.log(response)
-    const data = await response.json();
-    setBottleneck(JSON.stringify(data));
-};
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setBottleneck(data.result || []);
+      setBottleneckImage(data.image ? `data:image/png;base64,${data.image}` : null);
+    } catch (err) {
+      setError(err.message || 'Failed to process image');
+      setBottleneck([]);
+      setBottleneckImage(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const updateAlgorithmGroup = (groupKey, index, newAlgorithmData) => {
     setAlgorithmGroups(prev => ({
       ...prev,
-      [groupKey]: prev[groupKey].map((item, idx) => idx === index ? { ...item, ...newAlgorithmData } : item)
+      [groupKey]: prev[groupKey].map((item, idx) => 
+        idx === index ? { ...item, ...newAlgorithmData } : item
+      )
     }));
-    console.log(algorithmGroups)
-    console.log(algorithmGroups.encoder)
   };
 
-  // Example functions to add an algorithm to a group
   const addAlgorithm = (groupKey, algorithmType) => {
-    const newAlgorithm = { type: algorithmType }; // Initialize with an empty data object
     setAlgorithmGroups(prev => ({
       ...prev,
-      [groupKey]: [...prev[groupKey], newAlgorithm]
+      [groupKey]: [...prev[groupKey], { type: algorithmType }]
     }));
   };
 
-  function algorithmComponentList(groupKey) {
+  const renderAlgorithmComponents = (groupKey) => {
     return algorithmGroups[groupKey].map((algorithm, index) => {
+      const props = {
+        key: `${algorithm.type}-${index}`,
+        groupKey,
+        index
+      };
+
       switch (algorithm.type) {
         case "CNN":
-          return <Convolver key={index} groupKey={groupKey} index={index}/>;
+          return <Convolver {...props} />;
         case "PCA":
-          return <PCA key={index} groupKey={groupKey} index={index}/>;
+          return <PCA {...props} />;
         case "FF":
-          return <Feedforward key={index} groupKey={groupKey} index={index}/>;
-      default:
-        return null;
+          return <Feedforward {...props} />;
+        default:
+          return null;
       }
     });
-  }
+  };
 
   return (
     <div className='p-4'>
       <Sidebar />
-        <AlgorithmGroupContext.Provider value={{updateAlgorithmGroup}}>
-          <div className="container">
-            <div>
-              <Dropzone src={inputImageSrc} setSrc={setInputImageSrc} file={inputImageFile} setFile={setInputImageFile} className='' text='Drop image' height='150px' width='150px'/>
-              {inputImageSrc}
-              <button className="button" onClick={handleEncodeData}>Encode</button>
-            </div>
-            {algorithmComponentList("encoder")}
-            <InsertNetwork width='50px' height='50px' onAddComponent={(algorithmType) => addAlgorithm('encoder', algorithmType)}/>
-            <div>
-              <ImageCard width='100px' height='100px' />
-              {bottleneck.length} features
-              <button className="button">Decode</button>
-            </div>
-            {algorithmComponentList("decoder")}
-            <InsertNetwork width='50px' height='50px' onAddComponent={(algorithmType) => addAlgorithm('decoder', algorithmType)}/>
-            <ImageCard width='150px' height='150px' />
+      <AlgorithmGroupContext.Provider value={{ updateAlgorithmGroup }}>
+        <div className="container">
+          {/* Input Section */}
+          <div className="input-section">
+            <Dropzone
+              src={inputImageSrc}
+              setSrc={setInputImageSrc}
+              file={inputImageFile}
+              setFile={setInputImageFile}
+              text='Drop image'
+              height='150px'
+              width='150px'
+            />
+            {inputImageSrc && <div className="mt-2 text-sm text-gray-600">{inputImageSrc}</div>}
+            <button 
+              className={`button mt-4 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              onClick={handleEncodeData}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Processing...' : 'Encode'}
+            </button>
           </div>
-        </AlgorithmGroupContext.Provider>
-    </div>
-  )
-}
 
-export default Page
+          {/* Error Message */}
+          {error && (
+            <div className="error-message text-red-500 mt-4">
+              {error}
+            </div>
+          )}
+
+          {/* Encoder Section */}
+          <div className="encoder-section mt-6">
+            {renderAlgorithmComponents("encoder")}
+            <InsertNetwork
+              width='50px'
+              height='50px'
+              onAddComponent={(type) => addAlgorithm('encoder', type)}
+            />
+          </div>
+
+          {/* Bottleneck Section */}
+          <div className="bottleneck-section mt-6">
+            <ImageCard 
+              width='100px' 
+              height='100px' 
+              src={bottleneckImage}
+            />
+            <div className="mt-2 text-sm">
+              {bottleneck.length} features
+            </div>
+            <button className="button mt-4">
+              Decode
+            </button>
+          </div>
+
+          {/* Decoder Section */}
+          <div className="decoder-section mt-6">
+            {renderAlgorithmComponents("decoder")}
+            <InsertNetwork
+              width='50px'
+              height='50px'
+              onAddComponent={(type) => addAlgorithm('decoder', type)}
+            />
+          </div>
+
+          {/* Output Section */}
+          <div className="output-section mt-6">
+            <ImageCard 
+              width='150px' 
+              height='150px'
+            />
+          </div>
+        </div>
+      </AlgorithmGroupContext.Provider>
+    </div>
+  );
+};
+
+export default Page;
