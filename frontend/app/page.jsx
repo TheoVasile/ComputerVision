@@ -60,7 +60,14 @@ const Page = () => {
       }
 
       setBottleneck(data.result || []);
-      setBottleneckImage(data.image ? `data:image/png;base64,${data.image}` : null);
+      
+      // Check if there are any non-CNN algorithms in the encoder chain
+      const hasNonCNNAlgorithm = algorithmGroups.encoder.some(algo => algo.type !== "CNN");
+      if (hasNonCNNAlgorithm) {
+        setBottleneckImage(null); // Don't show image for non-CNN results
+      } else {
+        setBottleneckImage(data.image ? `data:image/png;base64,${data.image}` : null);
+      }
     } catch (err) {
       setError(err.message || 'Failed to process image');
       setBottleneck([]);
@@ -156,10 +163,17 @@ const Page = () => {
               width='100px' 
               height='100px' 
               src={bottleneckImage}
+              text={
+                !bottleneckImage && bottleneck.length > 0 ? 
+                `${bottleneck.length} features` : 
+                undefined
+              }
             />
-            <div className="mt-2 text-sm">
-              {bottleneck.length} features
-            </div>
+            {bottleneckImage && 
+              <div className="mt-2 text-sm">
+                {bottleneck.length} features
+              </div>
+            }
             <button className="button mt-4">
               Decode
             </button>

@@ -4,20 +4,26 @@ const ImageCard = ({ width, height, src, text }) => {
     const style = {
         width,
         height,
-        backgroundColor: src ? 'transparent' : '#eaeded',
+        backgroundColor: '#eaeded',
         border: '2px dotted #bfc9ca',
         borderRadius: '15px',
         backgroundImage: src ? `url(${src})` : 'none',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        position: 'relative'
+        position: 'relative',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: '#666',
+        fontSize: '14px',
+        textAlign: 'center',
+        padding: '10px'
     };
 
     const handleContextMenu = (e) => {
-        if (!src) return; // Don't show context menu if there's no image
+        if (!src) return;
         e.preventDefault();
         
-        // Create a new window/tab with HTML that displays the image
         const imageWindow = window.open('', '_blank');
         imageWindow.document.write(`
             <html>
