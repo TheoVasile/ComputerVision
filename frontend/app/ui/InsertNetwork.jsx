@@ -1,33 +1,35 @@
 import React from 'react'
-
 import Popup from './Popup';
 import Button from '@mui/material/Button';
 import MLAlgorithmChooser from './MLAlgorithmChooser'
 
-const InsertNetwork = ({...props}) => {
+const InsertNetwork = ({ width, height, onAddComponent, isDecoder = false }) => {
     return (
-        <Popup width={props.width} height={props.height}
+        <Popup width={width} height={height}
         buttonContent={
             <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                // Add other styles for the box as needed, like width, height, border, etc.
-                width: props.width, // example width
-                height: props.height, // example height
+                width: width,
+                height: height,
                 border: '2px solid blue',
                 borderRadius: '10px',
                 backgroundColor: 'transparent'
                 }}>
                 <span style={{
-                    fontSize: '24px', // Adjust the size as needed
+                    fontSize: '24px',
                     fontWeight: 'bold'
                 }}>+</span>
                 </div>
         }
         renderPopupContent={(closePopup) => (
-            <MLAlgorithmChooser onClose={closePopup} onSelectAlgorithm={props.onAddComponent}/>
-    )}
+            <MLAlgorithmChooser 
+                onClose={closePopup} 
+                onSelectAlgorithm={onAddComponent}
+                isDecoder={isDecoder}
+            />
+        )}
         />
     );
 }

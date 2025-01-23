@@ -1,18 +1,19 @@
 import Button from '@mui/material/Button'
 
-const MLAlgorithmChooser = ({onSelectAlgorithm, onClose}) => {
+const MLAlgorithmChooser = ({onSelectAlgorithm, onClose, isDecoder = false}) => {
     const handleAlgorithmSelection = (algorithmType) => {
         onSelectAlgorithm(algorithmType);
-        onClose(); // This will close the popup
+        onClose();
     };
+
     return (
         <div style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '80%', // or a fixed width if you prefer
-            height: '300px', // adjust as needed
+            width: '80%',
+            height: isDecoder ? '150px' : '300px',
             backgroundColor: 'white',
             borderRadius: '20px',
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
@@ -21,12 +22,25 @@ const MLAlgorithmChooser = ({onSelectAlgorithm, onClose}) => {
             position: 'fixed',
             top: '50%',
             left: '50%',
-            transform: 'translate(-50%, -50%)'
+            transform: 'translate(-50%, -50%)',
+            gap: '10px'
         }}>
-            {/* Replace with actual names or identifiers for your components */}
-            <Button onClick={() => handleAlgorithmSelection('CNN')}>Convolutional Neural Network</Button>
-            <Button onClick={() => handleAlgorithmSelection('PCA')}>Principle Component Analysis</Button>
-            <Button onClick={() => handleAlgorithmSelection('FF')}>Feed Forward</Button>
+            {!isDecoder && (
+                <>
+                    <Button onClick={() => handleAlgorithmSelection('CNN')}>
+                        Convolutional Neural Network
+                    </Button>
+                    <Button onClick={() => handleAlgorithmSelection('PCA')}>
+                        Principle Component Analysis
+                    </Button>
+                </>
+            )}
+            <Button 
+                onClick={() => handleAlgorithmSelection('FF')}
+                variant={isDecoder ? "contained" : "text"}
+            >
+                Feed Forward
+            </Button>
         </div>
     );
 };

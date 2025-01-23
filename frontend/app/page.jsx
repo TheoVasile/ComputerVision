@@ -154,6 +154,7 @@ const Page = () => {
               width='50px'
               height='50px'
               onAddComponent={(type) => addAlgorithm('encoder', type)}
+              isDecoder={false}
             />
           </div>
 
@@ -186,6 +187,7 @@ const Page = () => {
               width='50px'
               height='50px'
               onAddComponent={(type) => addAlgorithm('decoder', type)}
+              isDecoder={true}
             />
           </div>
 
