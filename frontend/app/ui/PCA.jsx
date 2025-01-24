@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
+"use client"
+
+import React, { useContext, useEffect } from 'react';
 import Popup from './Popup';
 import AlgorithmGroupContext from '../contexts/AlgorithmGroupContext';
-
 
 const PopupContent = ({dimensions, handleUpdate}) => {
     return (
@@ -28,23 +29,40 @@ const PopupContent = ({dimensions, handleUpdate}) => {
     );
 };
 
-
 export default function PCA({groupKey, index }) {
   const {updateAlgorithmGroup} = useContext(AlgorithmGroupContext)
   const [value, setValue] = React.useState(10);
+
+  // Initialize PCA with default parameters
+  useEffect(() => {
+    updateAlgorithmGroup(groupKey, index, { 
+      type: "PCA", 
+      output_features: value 
+    });
+  }, []);
+  
   const handleUpdate = (newValue) => {
     setValue(newValue);
-    updateAlgorithmGroup(groupKey, index, { type: "PCA", output_features: parseInt(newValue, 10) });
+    updateAlgorithmGroup(groupKey, index, { 
+      type: "PCA", 
+      output_features: parseInt(newValue, 10) 
+    });
   }
   
   return (
     <Popup buttonContent={
       <div className='pca-card'>
         <span style={{
-            fontSize: '12px', // Adjust the size as needed
+            fontSize: '12px',
             fontWeight: 'bold'
         }}>PCA</span>
-      </div>} renderPopupContent={() => <PopupContent dimensions={value} handleUpdate={handleUpdate}/>}
-      />
+      </div>} 
+      renderPopupContent={() => 
+        <PopupContent 
+          dimensions={value} 
+          handleUpdate={handleUpdate}
+        />
+      }
+    />
   );
 }
