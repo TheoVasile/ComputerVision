@@ -9,9 +9,8 @@ import ImageCard from './Imagecard';
 import HorizontalImageList from './HorizontalImageList'
 import FormatImagesPopup from './FormatImagesPopup';
 
-export default function Sidebar() {
+export default function Sidebar({images, setFiles}) {
     const [open, setOpen] = React.useState(false);
-    const [images, setFiles] = React.useState([]);
     const [isFormatPopupOpen, setIsFormatPopupOpen] = React.useState(false);
 
     const onDrop = useCallback(acceptedFiles => {
