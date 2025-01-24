@@ -6,6 +6,7 @@ import Sidebar from './ui/Sidebar'
 import Convolver from './ui/Convolver'
 import PCA from './ui/PCA'
 import Feedforward from './ui/Feedforward'
+import Visualize from './ui/Visualize'
 import ImageCard from './ui/Imagecard'
 import InsertNetwork from './ui/InsertNetwork'
 import AlgorithmGroupContext from './contexts/AlgorithmGroupContext'
@@ -23,7 +24,7 @@ const Page = () => {
   // Algorithm states
   const [algorithmGroups, setAlgorithmGroups] = useState({
     encoder: [], 
-    decoder: []
+    decoder: [{ type: 'Visualize', parameters: { width: 224, height: 224 } }]
   })
   
   // UI states
@@ -87,10 +88,22 @@ const Page = () => {
   };
 
   const addAlgorithm = (groupKey, algorithmType) => {
-    setAlgorithmGroups(prev => ({
-      ...prev,
-      [groupKey]: [...prev[groupKey], { type: algorithmType }]
-    }));
+    setAlgorithmGroups(prev => {
+      if (groupKey === 'decoder') {
+        // For decoder, add new algorithms before the Visualize algorithm
+        const newAlgorithms = [...prev.decoder];
+        newAlgorithms.splice(-1, 0, { type: algorithmType });
+        return {
+          ...prev,
+          decoder: newAlgorithms
+        };
+      }
+      // For encoder, just append to the end
+      return {
+        ...prev,
+        [groupKey]: [...prev[groupKey], { type: algorithmType }]
+      };
+    });
   };
 
   const renderAlgorithmComponents = (groupKey) => {
@@ -108,6 +121,8 @@ const Page = () => {
           return <PCA {...props} />;
         case "FF":
           return <Feedforward {...props} />;
+        case "Visualize":
+          return <Visualize {...props} />;
         default:
           return null;
       }
@@ -182,13 +197,35 @@ const Page = () => {
 
           {/* Decoder Section */}
           <div className="decoder-section mt-6">
-            {renderAlgorithmComponents("decoder")}
+            {algorithmGroups.decoder.slice(0, -1).map((algorithm, index) => {
+              const props = {
+                key: `${algorithm.type}-${index}`,
+                groupKey: "decoder",
+                index
+              };
+
+              switch (algorithm.type) {
+                case "FF":
+                  return <Feedforward {...props} />;
+                default:
+                  return null;
+              }
+            })}
             <InsertNetwork
               width='50px'
               height='50px'
               onAddComponent={(type) => addAlgorithm('decoder', type)}
               isDecoder={true}
             />
+            {/* Visualize component is always last */}
+            {algorithmGroups.decoder.slice(-1).map((algorithm, index) => {
+              const props = {
+                key: `${algorithm.type}-${algorithmGroups.decoder.length - 1}`,
+                groupKey: "decoder",
+                index: algorithmGroups.decoder.length - 1
+              };
+              return <Visualize {...props} />;
+            })}
           </div>
 
           {/* Output Section */}
