@@ -17,6 +17,7 @@ const Page = () => {
   // Image states
   const [inputImageSrc, setInputImageSrc] = useState("")
   const [inputImageFile, setInputImageFile] = useState(null)
+  const [inputImageDimensions, setInputImageDimensions] = useState({ width: 0, height: 0 });
   const [bottleneck, setBottleneck] = useState([])
   const [bottleneckImage, setBottleneckImage] = useState(null)
   const [outputImage, setOutputImage] = useState([])
@@ -78,11 +79,75 @@ const Page = () => {
     }
   };
 
+  const handleDecodeData = async () => {
+    if (!bottleneck || bottleneck.length === 0) {
+      setError('No data to decode');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Get the visualize parameters from the last algorithm
+      const visualizeParams = algorithmGroups.decoder[algorithmGroups.decoder.length - 1].parameters;
+      
+      // Get all feedforward algorithms (excluding the visualize)
+      const feedforwardAlgorithms = algorithmGroups.decoder.slice(0, -1);
+
+      // Convert bottleneck to array if it's not already
+      const inputData = Array.isArray(bottleneck) ? bottleneck : [bottleneck];
+
+      const response = await fetch(`${BACKEND_URL}/decode`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          input: inputData,
+          algorithms: feedforwardAlgorithms,
+          visualize: visualizeParams
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setOutputImage(data.image ? `data:image/png;base64,${data.image}` : null);
+    } catch (err) {
+      setError(err.message || 'Failed to decode data');
+      setOutputImage(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleImageLoad = (file) => {
+    const img = new Image();
+    img.onload = () => {
+      setInputImageDimensions({ width: img.width, height: img.height });
+    };
+    img.src = URL.createObjectURL(file);
+  };
+
+  const handleFileSet = (file) => {
+    setInputImageFile(file);
+    handleImageLoad(file);
+  };
+
   const updateAlgorithmGroup = (groupKey, index, newAlgorithmData) => {
+    console.log("Updating algorithm:", groupKey, index, newAlgorithmData);
     setAlgorithmGroups(prev => ({
       ...prev,
       [groupKey]: prev[groupKey].map((item, idx) => 
-        idx === index ? { ...item, ...newAlgorithmData } : item
+        idx === index ? newAlgorithmData : item
       )
     }));
   };
@@ -140,7 +205,7 @@ const Page = () => {
               src={inputImageSrc}
               setSrc={setInputImageSrc}
               file={inputImageFile}
-              setFile={setInputImageFile}
+              setFile={handleFileSet}
               text='Drop image'
               height='150px'
               width='150px'
@@ -164,7 +229,27 @@ const Page = () => {
 
           {/* Encoder Section */}
           <div className="encoder-section mt-6">
-            {renderAlgorithmComponents("encoder")}
+            {algorithmGroups.encoder.map((algorithm, index) => {
+              const props = {
+                key: `${algorithm.type}-${index}`,
+                groupKey: "encoder",
+                index,
+                inputSize: index === 0 ? 
+                  (inputImageDimensions.width * inputImageDimensions.height) : // First FF gets flattened image size
+                  null
+              };
+
+              switch (algorithm.type) {
+                case "CNN":
+                  return <Convolver {...props} />;
+                case "PCA":
+                  return <PCA {...props} />;
+                case "FF":
+                  return <Feedforward {...props} />;
+                default:
+                  return null;
+              }
+            })}
             <InsertNetwork
               width='50px'
               height='50px'
@@ -190,8 +275,12 @@ const Page = () => {
                 {bottleneck.length} features
               </div>
             }
-            <button className="button mt-4">
-              Decode
+            <button 
+              className={`button mt-4 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              onClick={handleDecodeData}
+              disabled={isLoading || !bottleneck || bottleneck.length === 0}
+            >
+              {isLoading ? 'Decoding...' : 'Decode'}
             </button>
           </div>
 
@@ -201,7 +290,12 @@ const Page = () => {
               const props = {
                 key: `${algorithm.type}-${index}`,
                 groupKey: "decoder",
-                index
+                index,
+                inputSize: index === 0 ? bottleneck.length : null, // Pass bottleneck size if first FF
+                outputSize: index === algorithmGroups.decoder.length - 2 ? // If this is the last FF before Visualize
+                  algorithmGroups.decoder[algorithmGroups.decoder.length - 1].parameters.width * 
+                  algorithmGroups.decoder[algorithmGroups.decoder.length - 1].parameters.height : 
+                  null
               };
 
               switch (algorithm.type) {
@@ -231,8 +325,10 @@ const Page = () => {
           {/* Output Section */}
           <div className="output-section mt-6">
             <ImageCard 
-              width='150px' 
-              height='150px'
+              width='100px' 
+              height='100px' 
+              src={outputImage}
+              text={!outputImage ? 'Output' : undefined}
             />
           </div>
         </div>

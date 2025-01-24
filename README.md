@@ -12,7 +12,7 @@ npm i react-window
 frontend:
 cd frontend && npm run dev
 backend:
-cd backend && python app.py
+cd backend && source venv/bin/activate && python app.py
 ```
 
 ## References

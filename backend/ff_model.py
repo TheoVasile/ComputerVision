@@ -2,17 +2,17 @@ import numpy as np
 from numpy.typing import NDArray
 from typing import List, Dict
 
-def ReLu(x: float) -> float:
+def ReLu(x: NDArray[np.float_]) -> NDArray[np.float_]:
     """
-    Applies the Rectified Linear Unit (ReLU) function to a single float.
+    Applies the Rectified Linear Unit (ReLU) function element-wise to a numpy array.
 
     Args:
-        x (float): A numeric value.
+        x (NDArray[np.float_]): Input array.
 
     Returns:
-        float: The result of applying the ReLU function, which is `x` if `x` is greater than 0, else 0.
+        NDArray[np.float_]: Array with ReLU applied element-wise.
     """
-    return max(0, x)
+    return np.maximum(0, x)
 
 def propogate(X: NDArray[np.float_], weights: NDArray[np.float_], biases: NDArray[np.float_]) -> NDArray[np.float_]:
     """
@@ -42,14 +42,13 @@ def activate(X: NDArray[np.float_]) -> NDArray[np.float_]:
     return ReLu(X)
 
 
-def process_ff(X: NDArray[np.float_], parameters: Dict[str, NDArray[np.float_]]) -> NDArray[np.float_]:
+def process_ff(X: NDArray[np.float_], parameters: List[Dict[str, NDArray[np.float_]]]) -> NDArray[np.float_]:
     """
     Processes the feedforward operation for a neural network with any number of layers.
 
     Args:
         X (NDArray[np.float_]): The input array to the neural network.
-        weights (List[NDArray[np.float_]]): A list of weight matrices for each layer of the network.
-        biases (List[NDArray[np.float_]]): A list of bias vectors for each layer of the network.
+        parameters (List[Dict[str, NDArray[np.float_]]]): List of dictionaries containing weights and biases for each layer.
 
     Returns:
         NDArray[np.float_]: The output of the neural network after processing all layers.
