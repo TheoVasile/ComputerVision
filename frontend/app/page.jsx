@@ -10,6 +10,7 @@ import Visualize from './ui/Visualize'
 import ImageCard from './ui/Imagecard'
 import InsertNetwork from './ui/InsertNetwork'
 import AlgorithmGroupContext from './contexts/AlgorithmGroupContext'
+import BackpropPopup from './ui/BackpropPopup'
 
 const BACKEND_URL = 'http://127.0.0.1:5000';
 
@@ -327,13 +328,10 @@ const Page = () => {
               src={outputImage}
               text={!outputImage ? 'Output' : undefined}
             />
-            <button 
-              className={`button mt-4 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-              onClick={handleTrain}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Training...' : 'Train'}
-            </button>
+            <BackpropPopup
+              isLoading={isLoading}
+              handleTrain={handleTrain}
+            />
           </div>
         </div>
       </AlgorithmGroupContext.Provider>

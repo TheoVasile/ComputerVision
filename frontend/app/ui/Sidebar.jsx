@@ -113,7 +113,7 @@ export default function Sidebar({images, setFiles}) {
 
     return (
         <div>
-            <Button onClick={toggleDrawer(true)}>Open Drawer</Button>
+            <Button onClick={toggleDrawer(true)}>Open Dataset</Button>
             <Drawer
                 anchor="top"
                 open={open}
