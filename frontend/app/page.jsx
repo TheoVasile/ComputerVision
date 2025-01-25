@@ -331,6 +331,7 @@ const Page = () => {
             <BackpropPopup
               isLoading={isLoading}
               handleTrain={handleTrain}
+              batch_size={images.length}
             />
           </div>
         </div>
