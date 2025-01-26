@@ -33,6 +33,9 @@ const MLAlgorithmChooser = ({onSelectAlgorithm, onClose, isDecoder = false}) => 
                     <Button onClick={() => handleAlgorithmSelection('PCA')}>
                         Principle Component Analysis
                     </Button>
+                    <Button onClick={() => handleAlgorithmSelection('Fourier')}>
+                        Fourier
+                    </Button>
                 </>
             )}
             <Button 

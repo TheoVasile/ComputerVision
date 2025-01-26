@@ -11,6 +11,7 @@ import ImageCard from './ui/Imagecard'
 import InsertNetwork from './ui/InsertNetwork'
 import AlgorithmGroupContext from './contexts/AlgorithmGroupContext'
 import BackpropPopup from './ui/BackpropPopup'
+import Fourier from './ui/Fourier'
 
 const BACKEND_URL = 'http://127.0.0.1:5000';
 
@@ -67,7 +68,7 @@ const Page = () => {
       setBottleneck(data.result || []);
       
       // Check if there are any non-CNN algorithms in the encoder chain
-      const hasNonCNNAlgorithm = algorithmGroups.encoder.some(algo => algo.type !== "CNN");
+      const hasNonCNNAlgorithm = algorithmGroups.encoder.some(algo => algo.type !== "CNN" && algo.type !== "Fourier");
       if (hasNonCNNAlgorithm) {
         setBottleneckImage(null); // Don't show image for non-CNN results
       } else {
@@ -235,6 +236,8 @@ const Page = () => {
                   return <PCA key={`${algorithm.type}-${index}`} groupKey={"encoder"} index={index} inputSize={index === 0 ? (inputImageDimensions.width * inputImageDimensions.height) : null} />;
                 case "FF":
                   return <Feedforward key={`${algorithm.type}-${index}`} groupKey={"encoder"} index={index} inputSize={index === 0 ? (inputImageDimensions.width * inputImageDimensions.height) : null} />;
+                case "Fourier":
+                  return <Fourier key={`${algorithm.type}-${index}`} groupKey={"encoder"} index={index} inputSize={index === 0 ? (inputImageDimensions.width * inputImageDimensions.height) : null} />;
                 default:
                   return null;
               }

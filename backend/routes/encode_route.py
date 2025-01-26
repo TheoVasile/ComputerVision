@@ -5,6 +5,7 @@ from models.image_model import process_image
 from models.cnn_model import process_cnn
 from models.pca_model import process_pca
 from models.ff_model import process_ff
+from models.fourier_model import process_fourier
 from services.helpers import array_to_base64
 
 
@@ -47,6 +48,8 @@ def encode():
                 X = process_cnn(X, np.array(algorithm["kernel"]).astype(float))
             elif algorithm["type"] == "PCA":
                 X = process_pca(X, algorithm["output_features"])
+            elif algorithm["type"] == "Fourier":
+                X = process_fourier(X)
             elif algorithm["type"] == "FF":
                 print("FF algorithm data:", algorithm)
                 print("FF parameters type:", type(algorithm["parameters"]))
@@ -71,7 +74,7 @@ def encode():
     
         # Convert result to base64 image if it's from CNN
         image_data = None
-        if algorithms and algorithms[-1]["type"] == "CNN":
+        if algorithms and algorithms[-1]["type"] in ["CNN", "Fourier"]:
             image_data = array_to_base64(X)
         
         return jsonify({

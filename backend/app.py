@@ -1,26 +1,12 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import numpy as np
-from models.cnn_model import process_cnn
-from models.pca_model import process_pca
-from models.ff_model import process_ff
-from models.image_model import process_image
-import json
 import base64
 import io
 from PIL import Image
-import os
-import boto3
-from flask import send_file
-from io import BytesIO
-import time
-from typing import List, Dict
-from numpy.typing import NDArray
 from routes import register_routes
-from config import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
 
 register_routes(app)
 
