@@ -162,6 +162,39 @@ def upload_dataset():
             'message': str(e)
         }), 400
 
+@app.route('/dataset/clear', methods=['POST'])
+def clear_dataset():
+    try:
+        # List all objects in the bucket
+        bucket_name = os.getenv("AWS_BUCKET_NAME")
+        while True:
+            response = s3.list_objects_v2(Bucket=bucket_name)
+
+            # If the bucket is empty, break the loop
+            if "Contents" not in response:
+                print(f"The bucket '{bucket_name}' is already empty.")
+                break
+
+            # Extract the keys of the objects to delete
+            objects_to_delete = [{"Key": obj["Key"]} for obj in response["Contents"]]
+
+            # Delete the objects in bulk
+            delete_response = s3.delete_objects(
+                Bucket=bucket_name,
+                Delete={"Objects": objects_to_delete}
+            )
+
+            print(f"Deleted: {delete_response.get('Deleted', [])}")
+
+            # If there are no more pages, break the loop
+            if not response.get("IsTruncated"):
+                break
+
+        print(f"All objects in bucket '{bucket_name}' have been deleted.")
+
+    except Exception as e:
+        print(f"Error clearing bucket: {e}")
+
 @app.route('/format_images', methods=['POST'])
 def format_images():
     try:

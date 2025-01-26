@@ -34,6 +34,19 @@ export default function Sidebar({images, setFiles}) {
         return null;
     };
 
+    const clearDataset = () => {
+        try {
+            const response = fetch('http://127.0.0.1:5000/dataset/clear', {
+                method: 'POST'
+            });
+            if (!response.ok) {
+                throw new Error('Failed to clear dataset');
+            }
+        } catch (error) {
+            console.error("Error clearing dataset:", error);
+        }
+    };
+
     const onDrop = useCallback(acceptedFiles => {
         setFiles(previousFiles => [
             ...previousFiles,
@@ -68,6 +81,7 @@ export default function Sidebar({images, setFiles}) {
                 src: `data:image/jpeg;base64,${base64Image}`
             })));
 
+            clearDataset();
             uploadToS3();
 
             setIsFormatPopupOpen(false);
