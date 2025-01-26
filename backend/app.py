@@ -9,6 +9,29 @@ import json
 import base64
 import io
 from PIL import Image
+from dotenv import load_dotenv
+import os
+import boto3
+from flask import send_file
+from io import BytesIO
+import time
+from typing import List, Dict
+from numpy.typing import NDArray
+# Load the .env file
+load_dotenv()
+
+# Access the environment variables
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+AWS_REGION = os.getenv("AWS_REGION")
+
+# connect to s3
+s3 = boto3.client(
+    "s3",
+    aws_access_key_id=AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    region_name=AWS_REGION,
+)
 
 app = Flask(__name__)
 CORS(app)
@@ -100,6 +123,38 @@ def process():
         
     except Exception as e:
         print("Error in encode:", str(e))
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 400
+
+def save_array_to_s3(array: NDArray[np.float_], bucket_name: str, object_name: str) -> None:
+    # Serialize the array into a .npy file (binary format)
+    np_bytes = io.BytesIO()
+    np.save(np_bytes, array, allow_pickle=False)  # Convert array to binary
+    np_bytes.seek(0)  # Reset the buffer pointer to the start
+
+    # Upload to S3
+    s3.put_object(Bucket=bucket_name, Key=object_name, Body=np_bytes.getvalue())
+
+@app.route('/dataset/upload', methods=['POST'])
+def upload_dataset():
+    try:
+        # Get the uploaded file from the request
+        images = request.files.getlist('images')
+
+        for img_file in images:
+            array = process_image(img_file)
+            save_array_to_s3(array, os.getenv("AWS_BUCKET_NAME"), img_file.filename)
+
+        return jsonify({
+            'status': 'success',
+            'message': 'File uploaded successfully'
+        })
+    except Exception as e:
+        print("Error in upload_dataset:", str(e))
         import traceback
         traceback.print_exc()
         return jsonify({

@@ -12,6 +12,27 @@ import FormatImagesPopup from './FormatImagesPopup';
 export default function Sidebar({images, setFiles}) {
     const [open, setOpen] = React.useState(false);
     const [isFormatPopupOpen, setIsFormatPopupOpen] = React.useState(false);
+    const [uploading, setUploading] = useState(false);
+
+    const uploadToS3 = async () => {
+        setUploading(true);
+        const formData = new FormData();
+        images.forEach(img => formData.append('images', img.file));
+        try {
+            const response = await fetch('http://127.0.0.1:5000/dataset/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to upload images');
+            }
+        } catch (error) {
+            console.error("Error uploading to S3:", error);
+        }
+        setUploading(false);
+        return null;
+    };
 
     const onDrop = useCallback(acceptedFiles => {
         setFiles(previousFiles => [
@@ -46,6 +67,8 @@ export default function Sidebar({images, setFiles}) {
                 file: base64ToFile(base64Image),
                 src: `data:image/jpeg;base64,${base64Image}`
             })));
+
+            uploadToS3();
 
             setIsFormatPopupOpen(false);
         } catch (error) {
@@ -89,6 +112,7 @@ export default function Sidebar({images, setFiles}) {
                 </form>
                 <HorizontalImageList images={images}/>
             </div>
+            {uploading && <p>Uploading...</p>}
             <div className="format-button-container" style={{ 
                 position: 'absolute', 
                 bottom: '20px', 
