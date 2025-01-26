@@ -145,9 +145,9 @@ def upload_dataset():
         # Get the uploaded file from the request
         images = request.files.getlist('images')
 
-        for img_file in images:
+        for i, img_file in enumerate(images):
             array = process_image(img_file)
-            save_array_to_s3(array, os.getenv("AWS_BUCKET_NAME"), img_file.filename)
+            save_array_to_s3(array, os.getenv("AWS_BUCKET_NAME"), f"image_{i}.npy")
 
         return jsonify({
             'status': 'success',
@@ -191,9 +191,19 @@ def clear_dataset():
                 break
 
         print(f"All objects in bucket '{bucket_name}' have been deleted.")
+        return jsonify({
+            'status': 'success',
+            'message': 'File uploaded successfully'
+        })
 
     except Exception as e:
         print(f"Error clearing bucket: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 400
 
 @app.route('/format_images', methods=['POST'])
 def format_images():

@@ -13,7 +13,6 @@ def process_image(file, normalize=False, preserveColor=True) -> NDArray[np.float
         numpy float array: wxhxc matrix where w represents width, h represents height, and c represents color channels
     """
     # Open the image from the bytes in the response content
-    print(file)
     image = Image.open(file.stream)
     if not preserveColor:
         image = image.convert('L')
