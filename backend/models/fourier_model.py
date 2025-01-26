@@ -1,7 +1,7 @@
 from numpy.typing import NDArray
 import numpy as np
 
-def process_fourier(X: NDArray[np.float_]) -> NDArray[np.float_]:
+def process_fourier(X: NDArray[np.float_], component: str) -> NDArray[np.float_]:
     """
     Perform a fourier transform on X
 
@@ -11,4 +11,10 @@ def process_fourier(X: NDArray[np.float_]) -> NDArray[np.float_]:
     Returns:
         numpy.ndarray: the resulting matrix from the fourier transform
     """
-    return np.abs(np.fft.fft2(X))
+    res = np.fft.fft2(X)
+    if component == "amplitude":
+        return np.abs(res)
+    elif component == "phase":
+        return np.angle(res)
+    else:
+        raise ValueError("Component must be 'amplitude' or 'phase'")

@@ -49,7 +49,7 @@ def encode():
             elif algorithm["type"] == "PCA":
                 X = process_pca(X, algorithm["output_features"])
             elif algorithm["type"] == "Fourier":
-                X = process_fourier(X)
+                X = process_fourier(X, algorithm["component"])
             elif algorithm["type"] == "FF":
                 print("FF algorithm data:", algorithm)
                 print("FF parameters type:", type(algorithm["parameters"]))
