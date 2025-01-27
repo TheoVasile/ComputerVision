@@ -13,7 +13,7 @@ def process_fourier(X: NDArray[np.float_], component: str) -> NDArray[np.float_]
     """
     res = np.fft.fft2(X)
     if component == "amplitude":
-        return np.abs(res)
+        return np.log(1+np.abs(res))
     elif component == "phase":
         return np.angle(res)
     else:

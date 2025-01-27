@@ -5,7 +5,7 @@ import io
 import os
 import boto3
 from models.image_model import process_image
-from config import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION
+from config import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, AWS_BUCKET_NAME
 
 # connect to s3
 s3 = boto3.client(
@@ -57,13 +57,12 @@ clear_bp = Blueprint("clear", __name__)
 def clear_dataset():
     try:
         # List all objects in the bucket
-        bucket_name = os.getenv("AWS_BUCKET_NAME")
         while True:
-            response = s3.list_objects_v2(Bucket=bucket_name)
+            response = s3.list_objects_v2(Bucket=AWS_BUCKET_NAME)
 
             # If the bucket is empty, break the loop
             if "Contents" not in response:
-                print(f"The bucket '{bucket_name}' is already empty.")
+                print(f"The bucket '{AWS_BUCKET_NAME}' is already empty.")
                 break
 
             # Extract the keys of the objects to delete
@@ -89,6 +88,30 @@ def clear_dataset():
 
     except Exception as e:
         print(f"Error clearing bucket: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 400
+
+
+retrieve_bp = Blueprint("retrieve", __name__)
+
+@retrieve_bp.route('/dataset/retrieve', methods=['GET'])
+def retrieve_dataset():
+    try:
+        # List all objects in the bucket
+        response = s3.list_objects_v2(Bucket=AWS_BUCKET_NAME)
+        print(response)
+        return jsonify({
+            'status': 'success',
+            'message': 'Files retrieved successfully',
+            'data': response
+        })
+    
+    except Exception as e:
+        print(f"Error retrieving bucket: {e}")
         import traceback
         traceback.print_exc()
         return jsonify({
