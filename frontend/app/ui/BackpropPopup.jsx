@@ -172,12 +172,12 @@ const BackpropPopup = ({isLoading, handleTrain, batch_size}) => {
   return (
     <Popup
       buttonContent={
-        <button 
+        <div 
             className={`button mt-4 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
             disabled={isLoading}
         >
             {isLoading ? 'Training...' : 'Train'}
-        </button>
+        </div>
       }
       renderPopupContent={() => 
         <PopupContent 
